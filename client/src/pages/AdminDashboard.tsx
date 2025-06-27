@@ -24,11 +24,26 @@ const portfolioConfigSchema = z.object({
   email: z.string().email("Valid email is required"),
   phone: z.string().optional(),
   location: z.string().optional(),
-  profileImage: z.string().url("Valid URL is required").optional(),
+  profileImage: z.string().optional(),
   theme: z.enum(["purple", "blue", "green", "red", "yellow"]),
-  skills: z.string().optional(),
-  stats: z.string().optional(),
-  socialLinks: z.string().optional(),
+  skills: z.object({
+    primary: z.string(),
+    secondary: z.string(),
+    tertiary: z.string(),
+    framework: z.string(),
+    other: z.string(),
+    database: z.string()
+  }).optional(),
+  stats: z.object({
+    projects: z.string(),
+    satisfaction: z.string(),
+    experience: z.string()
+  }).optional(),
+  socialLinks: z.array(z.object({
+    platform: z.string(),
+    url: z.string(),
+    icon: z.string()
+  })).optional(),
 });
 
 type PortfolioConfigForm = z.infer<typeof portfolioConfigSchema>;
@@ -71,9 +86,20 @@ export default function AdminDashboard() {
       location: "",
       profileImage: "",
       theme: "purple",
-      skills: "",
-      stats: "",
-      socialLinks: "",
+      skills: {
+        primary: "",
+        secondary: "",
+        tertiary: "",
+        framework: "",
+        other: "",
+        database: ""
+      },
+      stats: {
+        projects: "",
+        satisfaction: "",
+        experience: ""
+      },
+      socialLinks: [],
     },
   });
 
@@ -89,9 +115,20 @@ export default function AdminDashboard() {
         location: (config as any).location || "",
         profileImage: (config as any).profileImage || "",
         theme: (config as any).theme || "purple",
-        skills: (config as any).skills || "",
-        stats: (config as any).stats || "",
-        socialLinks: (config as any).socialLinks || "",
+        skills: (config as any).skills || {
+          primary: "",
+          secondary: "",
+          tertiary: "",
+          framework: "",
+          other: "",
+          database: ""
+        },
+        stats: (config as any).stats || {
+          projects: "",
+          satisfaction: "",
+          experience: ""
+        },
+        socialLinks: (config as any).socialLinks || [],
       });
       setCurrentTheme((config as any).theme || "purple");
     }
@@ -122,7 +159,7 @@ export default function AdminDashboard() {
     updateConfigMutation.mutate(data);
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) { // 5MB limit
@@ -135,10 +172,32 @@ export default function AdminDashboard() {
       }
 
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = async (e) => {
         const result = e.target?.result as string;
-        setUploadedImage(result);
-        form.setValue("profileImage", result);
+        
+        try {
+          // Upload image to server
+          const filename = `profile-${Date.now()}.${file.name.split('.').pop()}`;
+          const response = await apiRequest("POST", "/api/upload-image", {
+            imageData: result,
+            filename
+          });
+          const uploadResult = await response.json();
+          
+          setUploadedImage(uploadResult.url);
+          form.setValue("profileImage", uploadResult.url);
+          
+          toast({
+            title: "Image uploaded",
+            description: "Profile image has been uploaded successfully",
+          });
+        } catch (error) {
+          toast({
+            title: "Upload failed",
+            description: "Failed to upload image. Please try again.",
+            variant: "destructive",
+          });
+        }
       };
       reader.readAsDataURL(file);
     }

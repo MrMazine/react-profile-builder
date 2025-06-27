@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "title": "E-Commerce Platform",
+    "description": "Modern e-commerce solution built with React and Node.js, featuring real-time inventory management and secure payment processing.",
+    "image": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop",
+    "technologies": ["React", "Node.js", "MongoDB", "Stripe", "AWS"],
+    "liveUrl": "https://example-ecommerce.com",
+    "githubUrl": "https://github.com/alexjohnson/ecommerce-platform",
+    "featured": true
+  },
+  {
+    "id": 2,
+    "title": "Task Management App",
+    "description": "Collaborative task management application with real-time updates, team workspaces, and advanced filtering capabilities.",
+    "image": "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=600&h=400&fit=crop",
+    "technologies": ["Vue.js", "Express", "PostgreSQL", "Socket.io", "Docker"],
+    "liveUrl": "https://taskmanager-demo.com",
+    "githubUrl": "https://github.com/alexjohnson/task-manager",
+    "featured": true
+  },
+  {
+    "id": 3,
+    "title": "Weather Analytics Dashboard",
+    "description": "Interactive weather data visualization dashboard with historical analysis and predictive forecasting capabilities.",
+    "image": "https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=600&h=400&fit=crop",
+    "technologies": ["React", "D3.js", "Python", "FastAPI", "Redis"],
+    "liveUrl": "https://weather-analytics.com",
+    "githubUrl": "https://github.com/alexjohnson/weather-dashboard",
+    "featured": true
+  }
+]

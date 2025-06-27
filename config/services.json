@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "title": "Web Development",
+    "description": "Custom web applications built with modern frameworks like React, Vue, and Angular. Full-stack development including backend APIs and database design.",
+    "icon": "fas fa-code",
+    "features": ["Responsive Design", "Performance Optimization", "SEO Implementation", "API Integration"]
+  },
+  {
+    "id": 2,
+    "title": "Mobile App Development",
+    "description": "Native and cross-platform mobile applications for iOS and Android. React Native and Flutter development with focus on user experience.",
+    "icon": "fas fa-mobile-alt",
+    "features": ["Cross-platform", "Native Performance", "App Store Deployment", "Push Notifications"]
+  },
+  {
+    "id": 3,
+    "title": "Cloud Solutions",
+    "description": "Scalable cloud infrastructure setup and deployment. AWS, Google Cloud, and Azure expertise for reliable and cost-effective solutions.",
+    "icon": "fas fa-cloud",
+    "features": ["Auto Scaling", "Load Balancing", "Database Management", "DevOps Integration"]
+  },
+  {
+    "id": 4,
+    "title": "UI/UX Design",
+    "description": "User-centered design approach creating intuitive interfaces. Wireframing, prototyping, and design system development.",
+    "icon": "fas fa-paint-brush",
+    "features": ["User Research", "Wireframing", "Prototyping", "Design Systems"]
+  }
+]

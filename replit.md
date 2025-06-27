@@ -17,9 +17,10 @@ This is a modern, responsive personal portfolio website built with React, Expres
 
 ### Backend Architecture
 - **Framework**: Express.js with TypeScript
-- **Database**: PostgreSQL with Drizzle ORM
-- **Database Provider**: Neon Database (serverless PostgreSQL)
-- **Session Management**: Express sessions with PostgreSQL store
+- **Storage**: File-based JSON configuration system
+- **Configuration Files**: JSON files in `/config` directory for portfolio data
+- **Image Storage**: Local file storage in `/data/images` directory
+- **Session Management**: Simple admin authentication system
 - **Development**: Hot module replacement with Vite integration
 
 ### Build System
@@ -29,11 +30,12 @@ This is a modern, responsive personal portfolio website built with React, Expres
 
 ## Key Components
 
-### Database Schema
-The application uses three main tables:
-- **portfolio_config**: Stores personal information, contact details, and theme preferences
-- **projects**: Contains project details, technologies used, and links
-- **services**: Defines offered services with descriptions and icons
+### File-Based Storage Structure
+The application uses JSON configuration files:
+- **config/portfolio.json**: Personal information, contact details, skills, stats, and theme preferences
+- **config/projects.json**: Project details, technologies used, and links
+- **config/services.json**: Offered services with descriptions and icons
+- **data/images/**: Directory for uploaded profile images and assets
 
 ### UI Components
 - **Portfolio**: Main component orchestrating all sections
@@ -83,9 +85,9 @@ The application uses three main tables:
 
 ### Environment Configuration
 - **Platform**: Replit with autoscale deployment target
-- **Runtime**: Node.js 20 with PostgreSQL 16 module
+- **Runtime**: Node.js 20 with file-based storage
 - **Port Configuration**: Server runs on port 5000, exposed as port 80
-- **Environment Variables**: `DATABASE_URL` required for PostgreSQL connection
+- **Storage**: No external database required - uses local JSON files and image storage
 
 ### Development Workflow
 - **Development**: `npm run dev` starts both frontend and backend with HMR

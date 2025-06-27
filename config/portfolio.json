@@ -1,0 +1,40 @@
+{
+  "name": "Alex Johnson",
+  "title": "Full Stack Developer",
+  "about": "Passionate developer with 5+ years of experience creating innovative web solutions. I specialize in modern JavaScript frameworks and cloud technologies, delivering high-quality applications that solve real-world problems.",
+  "email": "alex@example.com",
+  "phone": "+1 (555) 123-4567",
+  "location": "San Francisco, CA",
+  "profileImage": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
+  "theme": "purple",
+  "skills": {
+    "primary": "JavaScript, TypeScript, React",
+    "secondary": "Node.js, Express, Python",
+    "tertiary": "AWS, Docker, Git",
+    "framework": "React, Vue, Next.js",
+    "other": "Figma, Adobe Creative Suite",
+    "database": "PostgreSQL, MongoDB, Redis"
+  },
+  "stats": {
+    "projects": "50+ Projects",
+    "satisfaction": "100% Client Satisfaction",
+    "experience": "5+ Years Experience"
+  },
+  "socialLinks": [
+    {
+      "platform": "GitHub",
+      "url": "https://github.com/alexjohnson",
+      "icon": "fab fa-github"
+    },
+    {
+      "platform": "LinkedIn",
+      "url": "https://linkedin.com/in/alexjohnson",
+      "icon": "fab fa-linkedin"
+    },
+    {
+      "platform": "Twitter",
+      "url": "https://twitter.com/alexjohnson",
+      "icon": "fab fa-twitter"
+    }
+  ]
+}
