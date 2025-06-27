@@ -12,8 +12,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useLocation } from "wouter";
-import { LogOut, Palette, Save } from "lucide-react";
+import { LogOut, Palette, Save, Upload, AlertCircle, Info, HelpCircle } from "lucide-react";
 import { type ThemeColor } from "@/hooks/useTheme";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const portfolioConfigSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -43,6 +45,8 @@ export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [currentTheme, setCurrentTheme] = useState<ThemeColor>("purple");
+  const [uploadedImage, setUploadedImage] = useState<string>("");
+  const [showHelp, setShowHelp] = useState(false);
 
   // Check if user is admin
   useEffect(() => {
@@ -116,6 +120,28 @@ export default function AdminDashboard() {
 
   const onSubmit = (data: PortfolioConfigForm) => {
     updateConfigMutation.mutate(data);
+  };
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        toast({
+          title: "File too large",
+          description: "Please select an image smaller than 5MB",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        setUploadedImage(result);
+        form.setValue("profileImage", result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleThemeChange = (theme: ThemeColor) => {
@@ -248,14 +274,62 @@ export default function AdminDashboard() {
                       />
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="profileImage" className="text-white">Profile Image URL (Optional)</Label>
-                      <Input
-                        id="profileImage"
-                        placeholder="https://example.com/image.jpg"
-                        className="bg-slate-700 border-slate-600 text-white"
-                        {...form.register("profileImage")}
-                      />
+                    <div className="space-y-2 md:col-span-2">
+                      <Label className="text-white">Profile Image</Label>
+                      <div className="space-y-4">
+                        {/* File Upload */}
+                        <div className="relative border-2 border-dashed border-slate-600 rounded-lg p-6 text-center hover:border-slate-500 transition-colors">
+                          <Upload className="mx-auto h-12 w-12 text-slate-400 mb-4" />
+                          <div className="space-y-2">
+                            <p className="text-sm text-slate-300">
+                              Drag and drop your image here, or click to browse
+                            </p>
+                            <p className="text-xs text-slate-500">
+                              PNG, JPG, GIF up to 5MB
+                            </p>
+                          </div>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                          />
+                        </div>
+                        
+                        {/* URL Input Alternative */}
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1 h-px bg-slate-600"></div>
+                          <span className="text-xs text-slate-500">OR</span>
+                          <div className="flex-1 h-px bg-slate-600"></div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="profileImageUrl" className="text-white text-sm">Image URL</Label>
+                          <Input
+                            id="profileImageUrl"
+                            placeholder="https://example.com/image.jpg"
+                            className="bg-slate-700 border-slate-600 text-white"
+                            {...form.register("profileImage")}
+                          />
+                        </div>
+                        
+                        {/* Preview */}
+                        {(uploadedImage || form.watch("profileImage")) && (
+                          <div className="mt-4">
+                            <Label className="text-white text-sm">Preview</Label>
+                            <div className="mt-2 relative">
+                              <img
+                                src={uploadedImage || form.watch("profileImage")}
+                                alt="Profile preview"
+                                className="w-32 h-32 rounded-full object-cover border-2 border-slate-600"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none';
+                                }}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
 
@@ -369,6 +443,166 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
         </Tabs>
+        
+        {/* Documentation Section */}
+        <div className="mt-8">
+          <Card className="bg-slate-800 border-slate-700">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center">
+                <HelpCircle className="h-5 w-5 mr-2" />
+                Content Management Guide
+              </CardTitle>
+              <CardDescription className="text-slate-400">
+                Learn how to customize your portfolio content effectively
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <Collapsible open={showHelp} onOpenChange={setShowHelp}>
+                <CollapsibleTrigger asChild>
+                  <Button variant="outline" className="w-full justify-between bg-slate-700 border-slate-600 text-white hover:bg-slate-600">
+                    <span>How to Add Content Information</span>
+                    <Info className="h-4 w-4" />
+                  </Button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="space-y-6 pt-6">
+                  {/* Basic Information */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-white border-b border-slate-600 pb-2">
+                      📝 Basic Information
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                      <div className="bg-slate-700 p-4 rounded-lg">
+                        <h4 className="font-medium text-white mb-2">Full Name</h4>
+                        <p className="text-slate-300">Your professional name as it will appear on the portfolio</p>
+                        <p className="text-green-400 mt-1">Example: "John Smith"</p>
+                      </div>
+                      <div className="bg-slate-700 p-4 rounded-lg">
+                        <h4 className="font-medium text-white mb-2">Professional Title</h4>
+                        <p className="text-slate-300">Your job title or professional role</p>
+                        <p className="text-green-400 mt-1">Example: "Full Stack Developer"</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Profile Image */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-white border-b border-slate-600 pb-2">
+                      🖼️ Profile Image Options
+                    </h3>
+                    <div className="space-y-3">
+                      <Alert className="bg-slate-700 border-slate-600">
+                        <Upload className="h-4 w-4" />
+                        <AlertDescription className="text-slate-300">
+                          <strong>Upload from Device:</strong> Click the upload area above to select an image from your computer. 
+                          Supported formats: PNG, JPG, GIF (max 5MB)
+                        </AlertDescription>
+                      </Alert>
+                      <Alert className="bg-slate-700 border-slate-600">
+                        <Info className="h-4 w-4" />
+                        <AlertDescription className="text-slate-300">
+                          <strong>Use Image URL:</strong> If your image is already online, paste the direct link to the image file.
+                          Example: https://example.com/my-photo.jpg
+                        </AlertDescription>
+                      </Alert>
+                    </div>
+                  </div>
+
+                  {/* Advanced Fields */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-white border-b border-slate-600 pb-2">
+                      ⚙️ Advanced Content (JSON Format)
+                    </h3>
+                    <div className="space-y-4">
+                      <div className="bg-slate-700 p-4 rounded-lg">
+                        <h4 className="font-medium text-white mb-2">Skills (JSON Format)</h4>
+                        <p className="text-slate-300 mb-2">List your technical skills in JSON format:</p>
+                        <pre className="bg-slate-800 p-3 rounded text-green-400 text-xs overflow-x-auto">
+{`{
+  "primary": "JavaScript, Python, React",
+  "secondary": "Node.js, Django, MongoDB", 
+  "tertiary": "AWS, Docker, Git",
+  "framework": "React, Vue, Angular",
+  "other": "Figma, Photoshop",
+  "database": "PostgreSQL, MySQL, Redis"
+}`}
+                        </pre>
+                      </div>
+
+                      <div className="bg-slate-700 p-4 rounded-lg">
+                        <h4 className="font-medium text-white mb-2">Stats (JSON Format)</h4>
+                        <p className="text-slate-300 mb-2">Your professional statistics:</p>
+                        <pre className="bg-slate-800 p-3 rounded text-green-400 text-xs overflow-x-auto">
+{`{
+  "projects": "50+ Projects",
+  "satisfaction": "100% Client Satisfaction", 
+  "experience": "5+ Years Experience"
+}`}
+                        </pre>
+                      </div>
+
+                      <div className="bg-slate-700 p-4 rounded-lg">
+                        <h4 className="font-medium text-white mb-2">Social Links (JSON Format)</h4>
+                        <p className="text-slate-300 mb-2">Your social media and professional profiles:</p>
+                        <pre className="bg-slate-800 p-3 rounded text-green-400 text-xs overflow-x-auto">
+{`[
+  {
+    "platform": "GitHub",
+    "url": "https://github.com/yourusername",
+    "icon": "fab fa-github"
+  },
+  {
+    "platform": "LinkedIn", 
+    "url": "https://linkedin.com/in/yourusername",
+    "icon": "fab fa-linkedin"
+  },
+  {
+    "platform": "Twitter",
+    "url": "https://twitter.com/yourusername", 
+    "icon": "fab fa-twitter"
+  }
+]`}
+                        </pre>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Tips */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-white border-b border-slate-600 pb-2">
+                      💡 Pro Tips
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <Alert className="bg-blue-900/20 border-blue-500/50">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertDescription className="text-slate-300">
+                          <strong>Save Regularly:</strong> Click "Save Configuration" after making changes to ensure your updates are preserved.
+                        </AlertDescription>
+                      </Alert>
+                      <Alert className="bg-green-900/20 border-green-500/50">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertDescription className="text-slate-300">
+                          <strong>Preview Changes:</strong> Your theme changes apply immediately. Visit the main portfolio to see updates.
+                        </AlertDescription>
+                      </Alert>
+                      <Alert className="bg-yellow-900/20 border-yellow-500/50">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertDescription className="text-slate-300">
+                          <strong>JSON Validation:</strong> Use online JSON validators if you're unsure about JSON format syntax.
+                        </AlertDescription>
+                      </Alert>
+                      <Alert className="bg-purple-900/20 border-purple-500/50">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertDescription className="text-slate-300">
+                          <strong>Image Quality:</strong> Use high-quality images (minimum 400x400px) for the best results.
+                        </AlertDescription>
+                      </Alert>
+                    </div>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

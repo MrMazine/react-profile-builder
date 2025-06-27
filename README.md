@@ -36,9 +36,12 @@ A modern, responsive, and easily customizable portfolio web application built wi
 
 ### 🔐 Admin Panel Features
 - Secure admin login (default: admin/admin123)
-- Portfolio configuration management
-- Theme customization (admin-only)
+- Portfolio configuration management with easy-to-use forms
+- Profile image upload from device (up to 5MB) or URL input
+- Theme customization (admin-only) with 5 color options
 - Real-time preview of changes
+- Comprehensive documentation and content management guide
+- JSON format examples for advanced customization
 
 ## Installation & Setup
 
